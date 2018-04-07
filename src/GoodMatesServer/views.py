@@ -3,42 +3,47 @@ from GoodMatesServer.models import User
 from django.http import JsonResponse, HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
-import datetime
+from datetime import datetime
 
 def jsonize(obj):
 	if isinstance(obj, list):
-		return serializers.serialize("json", obj, safe=False)
+		return serializers.serialize("json", obj)
 	else:
 		return jsonize([obj,])
 
+def parse_request(request):
+    if len(request.POST) == 1:
+        return json.loads(request.POST.keys()[0])
+    else:
+        to_return = []
+        for key in request.POST:
+            to_return.append(json.loads(key))
+        return to_return
 
 @csrf_exempt
 def create_user(request):
-	try:
-		first_name = request.POST.get("first_name")
-		last_name = request.POST.get("last_name")
-		uid = request.POST.get("uid")
-	except:
-		resp = HttpResponse("Bad create_user request")
-		resp.status_code = 400
-		return resp
+    request = parse_request(request)
+    first_name = request.get("first_name")
+    last_name = request.get("last_name")
+    uid = request.get("uid")
 
-	if first_name is not None and last_name is not None:
-		user = User(first_name=first_name, last_name=last_name, uid=uid, registered=datetime.now())
-		user.save()
-		data = jsonize(user)
-		return JsonResponse(json.loads(data))
-	else:
-		resp = HttpResponse("You did not enter a first name and/or last name")
-		resp.status_code = 400
-		return resp
+    if first_name is not None and last_name is not None:
+    	user = User(first_name=first_name, last_name=last_name, uid=uid, registered=datetime.now())
+    	user.save()
+    	data = jsonize(user)
+    	return JsonResponse(json.loads(data), safe=False)
+    else:
+    	resp = HttpResponse("You did not enter a first name and/or last name")
+    	resp.status_code = 400
+    	return resp
 
 
 @csrf_exempt
 def create_group(request):
-	try:
-		code = request.POST.get("code")
-		userid = request.POST.get("uid")
+    request = parse_request(request)
+    try:
+		code = request.get("code")
+		userid = request.get("uid")
 		user = User.objects.get(uid=userid)
 	except:
 		resp = HttpResponse("Bad create_group request")
@@ -57,7 +62,7 @@ def create_group(request):
 			data = jsonize(group)
 			user.group = code
 			user.save()
-			return JsonResponse(json.loads(data))
+			return JsonResponse(json.loads(data), safe=False)
 		else:
 			resp = HttpResponse("Invalid group code.")
 			resp.status_code = 400
@@ -66,9 +71,10 @@ def create_group(request):
 
 @csrf_exempt
 def join_group(request):
+    request = parse_request(request)
 	try:
-		code = request.POST.get("code")
-		userid = request.POST.get("uid")
+		code = request.get("code")
+		userid = request.get("uid")
 		user = User.objects.get(uid=userid)
 		group = Group.objects.get(uid=code)
 	except:
@@ -79,4 +85,4 @@ def join_group(request):
 	user.group = code
 	user.save()
 	data = jsonize(user)
-	return JsonResponse(json.loads(data))
+	return JsonResponse(json.loads(data), safe=False)
