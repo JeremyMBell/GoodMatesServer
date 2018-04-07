@@ -6,8 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 import datetime
 
 def jsonize(obj):
-	if obj isinstance list:
-		return serializers.serialize("json", obj,)
+	if isinstance(obj, list):
+		return serializers.serialize("json", obj, safe=False)
 	else:
 		return jsonize([obj,])
 
