@@ -16,7 +16,7 @@ def create_user(request):
 	if first_name is not None and last_name is not None:
 		user = User(first_name=first_name, last_name=last_name, uid=uid)
 		user.save()
-		data = serializers.serialize("json", user)
+		data = serializers.serialize("json", [user])
 		return JsonResponse(json.loads(data))
 	else:
 		resp = HttpResponse("You did not enter a first name and/or last name")
@@ -43,7 +43,7 @@ def create_group(request):
 		if code is not None and isalnum(code) and len(code) == 8:
 			group = Group(uid=code)
 			group.save()
-			data = serializers.serialize("json", group)
+			data = serializers.serialize("json", [group])
 			user.group = code
 			user.save()
 			return JsonResponse(json.loads(data))
@@ -66,5 +66,5 @@ def join_group(request):
 
 	user.group = code
 	user.save()
-	data = serializers.serialize("json", user)
+	data = serializers.serialize("json", [user])
 	return JsonResponse(json.loads(data))
