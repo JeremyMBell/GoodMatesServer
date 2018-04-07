@@ -40,3 +40,46 @@ Where view is a function from views.py
 Never touched this file. You don't need to concern yourself with this.
 
 ## `src/GoodMatesServer`
+
+### views.py
+
+The most important file to use.
+
+Define a bunch of functions that take in a `request` (HTTPRequest object in Django) and return an HTTPResponse.
+
+Since this an API, all of the responses will be JSON, so your return statement should look like:
+
+`return JsonResponse({'foo':'bar'})`
+
+Import stuff from models to make queries to the database.
+
+### models.py
+
+Representation of db objects in python. Here are some examples of stuff you can do with models:
+
+#### Create a new row for a User:
+
+```
+x = User(field1 = value1, field2 = value2)
+x.save()
+```
+
+#### Modify a row:
+
+```
+x.field1 = value
+x.save()
+```
+
+#### Get a single row:
+```
+x = User.objects.get(id = 1234) # this will return an error if no entry or many entries are found
+```
+
+#### Filter rows
+
+There's a lot of nuances to filtering other than the equals sign. Here's a whole list of them with the equivalent SQL query attached. https://docs.djangoproject.com/en/1.8/ref/models/querysets/#field-lookups
+
+```
+xs = User.objects.filter(field1 = "yooo")
+```
