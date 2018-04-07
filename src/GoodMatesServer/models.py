@@ -2,11 +2,11 @@ from django.db import models
 from django.core.validators import MinValueValidator
 
 class Group(models.Model):
-	uid = models.CharField(primary_key=True, max_length=8, min_length=8)
+	uid = models.CharField(primary_key=True, max_length=8)
 	registered = models.DateField(auto_now_add=True)
 
 class User(models.Model):
-	uid = models.CharField(primary_key=True, max_length=28, min_length=28)
+	uid = models.CharField(primary_key=True, max_length=28)
 	first_name = models.CharField(max_length=20, blank=False)
 	last_name = models.CharField(max_length=20, blank=False)
 	registered = models.DateField(auto_now_add=True)
