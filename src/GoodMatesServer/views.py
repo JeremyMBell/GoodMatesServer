@@ -3,10 +3,11 @@ from GoodMatesServer.models import User
 from django.http import JsonResponse, HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+import datetime
 
 def jsonize(obj):
 	if obj isinstance list:
-		return serializers.serialize("json", obj)
+		return serializers.serialize("json", obj,)
 	else:
 		return jsonize([obj,])
 
@@ -23,7 +24,7 @@ def create_user(request):
 		return resp
 
 	if first_name is not None and last_name is not None:
-		user = User(first_name=first_name, last_name=last_name, uid=uid)
+		user = User(first_name=first_name, last_name=last_name, uid=uid, registered=datetime.now())
 		user.save()
 		data = jsonize(user)
 		return JsonResponse(json.loads(data))
@@ -51,7 +52,7 @@ def create_group(request):
 		return resp
 	except:
 		if code is not None and isalnum(code) and len(code) == 8:
-			group = Group(uid=code)
+			group = Group(uid=code, registered=datetime.now())
 			group.save()
 			data = jsonize(group)
 			user.group = code
