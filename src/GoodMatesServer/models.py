@@ -19,8 +19,8 @@ class Laundry(models.Model):
 	group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
 class Payment(models.Model):
-	creditor = models.OneToOneField(User, on_delete=models.CASCADE)
-	debtor = models.OneToOneField(User, on_delete=models.CASCADE)
+	creditor = models.OneToOneField(User, on_delete=models.CASCADE, related_name='%(class)s_creditor')
+	debtor = models.OneToOneField(User, on_delete=models.CASCADE, related_name='%(class)s_debtor')
 	amount = models.FloatField(blank = False)
 	time_due = models.DateField()
 	paid = models.BooleanField(blank = False)
