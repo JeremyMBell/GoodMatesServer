@@ -245,7 +245,7 @@ def get_group(request):
 		resp.status_code = 400
 		return resp
 	data = json.loads(jsonize(group))
-	data["users"] = json.loads(jsonize(group.user_set.all()))
+	data[0]["users"] = json.loads(jsonize(list(group.user_set.all())))
 	return JsonResponse(data, safe=False)
 
 
