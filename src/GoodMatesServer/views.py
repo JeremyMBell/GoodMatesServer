@@ -5,7 +5,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 
-DATETIME_FORMAT = "%m/%d/%Y %I:%M:%S %p"
+DATETIME_FORMAT = "%m/%d/%Y %I:%M %p"
 
 def jsonize(obj):
 	if isinstance(obj, list):
