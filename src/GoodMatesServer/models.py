@@ -9,6 +9,7 @@ class User(models.Model):
 	uid = models.CharField(primary_key=True, max_length=28)
 	first_name = models.CharField(max_length=20, blank=False)
 	last_name = models.CharField(max_length=20, blank=False)
+	phone = models.PositiveIntegerField(max_length=10, blank=False)
 	registered = models.DateField(auto_now_add=True)
 	group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
 
@@ -49,7 +50,7 @@ class Chore(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	group = models.ForeignKey(Group, on_delete=models.CASCADE)
 	notes = models.CharField(max_length=250)
-	due = models.DateField(blank=False)
+	time_due = models.DateField(blank=False)
 
 class PostIt(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)

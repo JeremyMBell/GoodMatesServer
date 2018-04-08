@@ -4,7 +4,9 @@ from django.http import JsonResponse, HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
+
 DATETIME_FORMAT = "%m/%d/%Y %I:%M:%S %p"
+
 def jsonize(obj):
 	if isinstance(obj, list):
 		return serializers.serialize("json", obj)
@@ -29,9 +31,17 @@ def create_user(request):
 	first_name = request.get("first_name")
 	last_name = request.get("last_name")
 	uid = request.get("uid")
+	phone = request.get("phone")
+
+	try:
+		phone = int(phone)
+	except:
+		resp = HttpResponse("Invalid phone")
+		resp.status_code = 400
+		return resp
 
 	if first_name is not None and last_name is not None:
-		user = User(first_name=first_name, last_name=last_name, uid=uid, registered=datetime.now())
+		user = User(first_name=first_name, last_name=last_name, uid=uid, registered=datetime.now(), phone=phone)
 		user.save()
 		data = jsonize(user)
 		return JsonResponse(json.loads(data), safe=False)
@@ -134,6 +144,29 @@ def book_shower(request):
 
 
 @csrf_exempt
+def note_guests(request):
+	request = parse_request(request)
+	try:
+		code = request.get("code")
+		userid = request.get("uid")
+		user = User.objects.get(uid=userid)
+		group = Group.objects.get(uid=code)
+		start = datetime.strptime(request.get("start_time"), DATETIME_FORMAT)
+		stop = datetime.strptime(request.get("end_time"), DATETIME_FORMAT)
+		num_guests = request.get("num_guests")
+		needs_privacy = request.get("needs_privacy")
+	except:
+		resp = HttpResponse("User/Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	guests = Guests(uid=userid, group=code, start_time=start, end_time=stop, num_guests=num_guests, needs_privacy=needs_privacy)
+	guests.save()
+	data = jsonize(guests)
+	return JsonResponse(json.loads(data), safe=False)
+
+
+@csrf_exempt
 def note_payment(request):
 	request = parse_request(request)
 	try:
@@ -151,4 +184,45 @@ def note_payment(request):
 	payment = Payment(creditor=creditor, debtor=debtor, amount=amount, time_due=due, paid=False)
 	payment.save()
 	data = jsonize(payment)
+	return JsonResponse(json.loads(data), safe=False)
+
+
+@csrf_exempt
+def note_chore(request):
+	request = parse_request(request)
+	try:
+		code = request.get("code")
+		userid = request.get("uid")
+		user = User.objects.get(uid=userid)
+		group = Group.objects.get(uid=code)
+		due = datetime.strptime(request.get("time_due"), DATETIME_FORMAT)
+		notes = request.get("notes")
+	except:
+		resp = HttpResponse("User/Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	chore = Chore(uid=userid, group=code, time_due=due, notes=notes)
+	chore.save()
+	data = jsonize(chore)
+	return JsonResponse(json.loads(data), safe=False)
+
+
+@csrf_exempt
+def note_plan(request):
+	request = parse_request(request)
+	try:
+		code = request.get("code")
+		group = Group.objects.get(uid=code)
+		start = datetime.strptime(request.get("start_time"), DATETIME_FORMAT)
+		stop = datetime.strptime(request.get("end_time"), DATETIME_FORMAT)
+		notes = request.get("notes")
+	except:
+		resp = HttpResponse("User/Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	plan = Plan(group=code, start_time=start, end_time=stop, notes=notes)
+	plan.save()
+	data = jsonize(plan)
 	return JsonResponse(json.loads(data), safe=False)
