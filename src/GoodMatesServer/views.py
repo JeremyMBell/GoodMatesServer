@@ -244,8 +244,9 @@ def get_group(request):
 		resp = HttpResponse("Group does not exist")
 		resp.status_code = 400
 		return resp
-
-	return JsonResponse(json.loads(jsonize(group)), safe=False)
+	data = json.loads(jsonize(group))
+	data["users"] = json.loads(jsonize(group.user_set.all()))
+	return JsonResponse(data, safe=False)
 
 
 @csrf_exempt
