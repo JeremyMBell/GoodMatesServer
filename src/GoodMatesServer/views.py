@@ -4,7 +4,7 @@ from django.http import JsonResponse, HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
-
+DATETIME_FORMAT = "%m/%d/%Y %I:%M:%S %p"
 def jsonize(obj):
 	if isinstance(obj, list):
 		return serializers.serialize("json", obj)
@@ -99,8 +99,8 @@ def book_laundry(request):
 		userid = request.get("uid")
 		user = User.objects.get(uid=userid)
 		group = Group.objects.get(uid=code)
-		start = request.get("start_time")
-		stop = request.get("end_time")
+		start = datetime.strptime(request.get("start_time"), DATETIME_FORMAT)
+		stop = datetime.strptime(request.get("end_time"), DATETIME_FORMAT)
 	except:
 		resp = HttpResponse("User/Group does not exist")
 		resp.status_code = 400
@@ -120,8 +120,8 @@ def book_shower(request):
 		userid = request.get("uid")
 		user = User.objects.get(uid=userid)
 		group = Group.objects.get(uid=code)
-		start = request.get("start_time")
-		stop = request.get("end_time")
+		start = datetime.strptime(request.get("start_time"), DATETIME_FORMAT)
+		stop = datetime.strptime(request.get("end_time"), DATETIME_FORMAT)
 	except:
 		resp = HttpResponse("User/Group does not exist")
 		resp.status_code = 400
