@@ -109,14 +109,13 @@ def book_laundry(request):
 		userid = request.get("uid")
 		user = User.objects.get(uid=userid)
 		group = Group.objects.get(uid=code)
-		start = datetime.strptime(request.get("start_time"), DATETIME_FORMAT)
-		stop = datetime.strptime(request.get("end_time"), DATETIME_FORMAT)
 	except:
 		resp = HttpResponse("User/Group does not exist")
 		resp.status_code = 400
 		return resp
 
-	laundry = Laundry(start_time=start, end_time=stop, user=userid, group=code)
+
+	laundry = Laundry(start_time=start, end_time=stop, user=user, group=group)
 	laundry.save()
 	data = jsonize(laundry)
 	return JsonResponse(json.loads(data), safe=False)
@@ -137,7 +136,7 @@ def book_shower(request):
 		resp.status_code = 400
 		return resp
 
-	shower = Shower(start_time=start, end_time=stop, user=userid, group=code)
+	shower = Shower(start_time=start, end_time=stop, user=user, group=group)
 	shower.save()
 	data = jsonize(shower)
 	return JsonResponse(json.loads(data), safe=False)
@@ -160,7 +159,7 @@ def note_guests(request):
 		resp.status_code = 400
 		return resp
 
-	guests = Guests(uid=userid, group=code, start_time=start, end_time=stop, num_guests=num_guests, needs_privacy=needs_privacy)
+	guests = Guests(user=user, group=group, start_time=start, end_time=stop, num_guests=num_guests, needs_privacy=needs_privacy)
 	guests.save()
 	data = jsonize(guests)
 	return JsonResponse(json.loads(data), safe=False)
@@ -170,10 +169,10 @@ def note_guests(request):
 def note_payment(request):
 	request = parse_request(request)
 	try:
-		creditor = request.get("creditor")
-		debtor = request.get("debtor")
-		user = User.objects.get(uid=creditor)
-		user = User.objects.get(uid=debtor)
+		creditor_uid = request.get("creditor")
+		debtor_uid = request.get("debtor")
+		creditor = User.objects.get(uid=creditor_uid)
+		debtor = User.objects.get(uid=debtor_uid)
 		due = request.get("time_due")
 		amount = request.get("amount")
 	except:
@@ -202,7 +201,7 @@ def note_chore(request):
 		resp.status_code = 400
 		return resp
 
-	chore = Chore(uid=userid, group=code, time_due=due, notes=notes)
+	chore = Chore(user=user, group=group, time_due=due, notes=notes)
 	chore.save()
 	data = jsonize(chore)
 	return JsonResponse(json.loads(data), safe=False)
@@ -222,7 +221,7 @@ def note_plan(request):
 		resp.status_code = 400
 		return resp
 
-	plan = Plan(group=code, start_time=start, end_time=stop, notes=notes)
+	plan = Plan(group=group, start_time=start, end_time=stop, notes=notes)
 	plan.save()
 	data = jsonize(plan)
 	return JsonResponse(json.loads(data), safe=False)
