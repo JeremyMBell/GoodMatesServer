@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^note_payment/$', views.note_payment),
     url(r'^note_guests/$', views.note_guests),
     url(r'^note_chore/$', views.note_chore),
-    url(r'^note_plan/$', views.note_plan)
+    url(r'^note_plan/$', views.note_plan),
+    url(r'^get_user/$', views.get_user)
 ]

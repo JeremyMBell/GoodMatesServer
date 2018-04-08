@@ -15,15 +15,9 @@ def jsonize(obj):
 
 def parse_request(request):
 	return request.POST
-	if len(request.POST) == 0:
-		return {}
-	elif len(request.POST) == 1:
-		return json.loads(request.POST.keys()[0])
-	else:
-		to_return = []
-		for key in request.POST:
-			to_return.append(json.loads(key))
-		return to_return
+
+def parse2_request(request):
+	return request.GET
 
 @csrf_exempt
 def create_user(request):
@@ -227,3 +221,18 @@ def note_plan(request):
 	plan.save()
 	data = jsonize(plan)
 	return JsonResponse(json.loads(data), safe=False)
+
+
+
+@csrf_exempt
+def get_user(request):
+	try:
+		request = parse2_request(request)
+		userid = request.get("uid")
+		user = User.objects.get(uid=userid)
+	except:
+		resp = HttpResponse("User does not exist")
+		resp.status_code = 400
+		return resp
+
+	return JsonResponse(json.loads(jsonize(user)), safe=False)
