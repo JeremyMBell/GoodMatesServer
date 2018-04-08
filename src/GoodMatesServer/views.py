@@ -131,3 +131,24 @@ def book_shower(request):
 	shower.save()
 	data = jsonize(shower)
 	return JsonResponse(json.loads(data), safe=False)
+
+
+@csrf_exempt
+def note_payment(request):
+	request = parse_request(request)
+	try:
+		creditor = request.get("creditor")
+		debtor = request.get("debtor")
+		user = User.objects.get(uid=creditor)
+		user = User.objects.get(uid=debtor)
+		due = request.get("time_due")
+		amount = request.get("amount")
+	except:
+		resp = HttpResponse("User does not exist")
+		resp.status_code = 400
+		return resp
+
+	payment = Payment(creditor=creditor, debtor=debtor, amount=amount, time_due=due, paid=False)
+	payment.save()
+	data = jsonize(payment)
+	return JsonResponse(json.loads(data), safe=False)
