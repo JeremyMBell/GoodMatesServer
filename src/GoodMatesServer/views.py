@@ -109,6 +109,8 @@ def book_laundry(request):
 		userid = request.get("uid")
 		user = User.objects.get(uid=userid)
 		group = Group.objects.get(uid=code)
+		start = datetime.strptime(request.get("start_time"), DATETIME_FORMAT)
+		stop = datetime.strptime(request.get("end_time"), DATETIME_FORMAT)
 	except:
 		resp = HttpResponse("User/Group does not exist")
 		resp.status_code = 400
