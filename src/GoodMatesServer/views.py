@@ -89,3 +89,45 @@ def join_group(request):
 	user.save()
 	data = jsonize(user)
 	return JsonResponse(json.loads(data), safe=False)
+
+
+@csrf_exempt
+def book_laundry(request):
+	request = parse_request(request)
+	try:
+		code = request.get("code")
+		userid = request.get("uid")
+		user = User.objects.get(uid=userid)
+		group = Group.objects.get(uid=code)
+		start = request.get("start_time")
+		stop = request.get("end_time")
+	except:
+		resp = HttpResponse("User/Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	laundry = Laundry(start_time=start, end_time=stop, user=userid, group=code)
+	laundry.save()
+	data = jsonize(laundry)
+	return JsonResponse(json.loads(data), safe=False)
+
+
+@csrf_exempt
+def book_shower(request):
+	request = parse_request(request)
+	try:
+		code = request.get("code")
+		userid = request.get("uid")
+		user = User.objects.get(uid=userid)
+		group = Group.objects.get(uid=code)
+		start = request.get("start_time")
+		stop = request.get("end_time")
+	except:
+		resp = HttpResponse("User/Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	shower = Shower(start_time=start, end_time=stop, user=userid, group=code)
+	shower.save()
+	data = jsonize(shower)
+	return JsonResponse(json.loads(data), safe=False)
