@@ -1,5 +1,5 @@
 from django.core import serializers
-from GoodMatesServer.models import User
+from GoodMatesServer.models import *
 from django.http import JsonResponse, HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -12,7 +12,10 @@ def jsonize(obj):
 		return jsonize([obj,])
 
 def parse_request(request):
-	if len(request.POST) == 1:
+	return request.POST
+	if len(request.POST) == 0:
+		return {}
+	elif len(request.POST) == 1:
 		return json.loads(request.POST.keys()[0])
 	else:
 		to_return = []
@@ -56,11 +59,11 @@ def create_group(request):
 		resp.status_code = 400
 		return resp
 	except:
-		if code is not None and isalnum(code) and len(code) == 8:
+		if code is not None and code.isalnum() and len(code) == 8:
 			group = Group(uid=code, registered=datetime.now())
 			group.save()
 			data = jsonize(group)
-			user.group = code
+			user.group = group
 			user.save()
 			return JsonResponse(json.loads(data), safe=False)
 		else:
@@ -82,7 +85,7 @@ def join_group(request):
 		resp.status_code = 400
 		return resp
 
-	user.group = code
+	user.group = group
 	user.save()
 	data = jsonize(user)
 	return JsonResponse(json.loads(data), safe=False)
