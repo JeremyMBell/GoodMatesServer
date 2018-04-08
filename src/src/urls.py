@@ -17,5 +17,13 @@ urlpatterns = [
     url(r'^note_guests/$', views.note_guests),
     url(r'^note_chore/$', views.note_chore),
     url(r'^note_plan/$', views.note_plan),
-    url(r'^get_user/$', views.get_user)
+    url(r'^get_user/$', views.get_user),
+    url(r'^get_group/$', views.get_group),
+    url(r'^get_laundry/$', views.get_laundry),
+    url(r'^get_shower/$', views.get_shower),
+    url(r'^get_payment/$', views.get_payment),
+    url(r'^get_guests/$', views.get_guests),
+    url(r'^get_chore/$', views.get_chore),
+    url(r'^get_plan/$', views.get_plan)
+
 ]

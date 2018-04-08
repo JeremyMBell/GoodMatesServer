@@ -16,8 +16,6 @@ def jsonize(obj):
 def parse_request(request):
 	return request.POST
 
-def parse2_request(request):
-	return request.GET
 
 @csrf_exempt
 def create_user(request):
@@ -227,8 +225,7 @@ def note_plan(request):
 @csrf_exempt
 def get_user(request):
 	try:
-		request = parse2_request(request)
-		userid = request.get("uid")
+		userid = request.GET.get("uid")
 		user = User.objects.get(uid=userid)
 	except:
 		resp = HttpResponse("User does not exist")
@@ -236,3 +233,94 @@ def get_user(request):
 		return resp
 
 	return JsonResponse(json.loads(jsonize(user)), safe=False)
+
+
+@csrf_exempt
+def get_group(request):
+	try:
+		uid = request.GET.get("code")
+		group = Group.objects.get(uid=uid)
+	except:
+		resp = HttpResponse("Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	return JsonResponse(json.loads(jsonize(group)), safe=False)
+
+
+@csrf_exempt
+def get_laundry(request):
+	try:
+		group = request.GET.get("code")
+		laundries = Group.objects.get(uid=group).laundry_set.all()
+	except:
+		resp = HttpResponse("Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	return JsonResponse(json.loads(jsonize(laundries)), safe=False)
+
+
+@csrf_exempt
+def get_shower(request):
+	try:
+		group = request.GET.get("code")
+		showers = Group.objects.get(uid=group).shower_set.all()
+	except:
+		resp = HttpResponse("Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	return JsonResponse(json.loads(jsonize(showers)), safe=False)
+
+
+@csrf_exempt
+def get_payment(request):
+	try:
+		userid = request.GET.get("uid")
+		payments = User.objects.get(uid=userid).payment_set.all()
+	except:
+		resp = HttpResponse("User does not exist")
+		resp.status_code = 400
+		return resp
+
+	return JsonResponse(json.loads(jsonize(payments)), safe=False)
+
+
+@csrf_exempt
+def get_guests(request):
+	try:
+		group = request.GET.get("code")
+		guests = Group.objects.get(uid=group).guests_set.all()
+	except:
+		resp = HttpResponse("Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	return JsonResponse(json.loads(jsonize(guests)), safe=False)
+
+
+@csrf_exempt
+def get_chore(request):
+	try:
+		group = request.GET.get("code")
+		chores = Group.objects.get(uid=group).chore_set.all()
+	except:
+		resp = HttpResponse("Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	return JsonResponse(json.loads(jsonize(chores)), safe=False)
+
+
+@csrf_exempt
+def get_plan(request):
+	try:
+		group = request.GET.get("code")
+		plans = Group.objects.get(uid=group).plan_set.all()
+	except:
+		resp = HttpResponse("Group does not exist")
+		resp.status_code = 400
+		return resp
+
+	return JsonResponse(json.loads(jsonize(plans)), safe=False)
