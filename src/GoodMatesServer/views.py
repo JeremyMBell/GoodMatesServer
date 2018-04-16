@@ -17,7 +17,7 @@ def jsonize(obj):
 def parse_request(request):
 	return request.POST
 
-def overlapping_times(start_time, end_time, group, query_dict)
+def overlapping_times(start_time, end_time, group, query_dict):
 	return query_dict.filter(Q(start_time__gte=start_time) | Q(start_time__lte=end_time), group=group)
 
 @csrf_exempt
