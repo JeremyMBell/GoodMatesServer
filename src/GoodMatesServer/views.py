@@ -143,8 +143,7 @@ def book_shower(request):
 			resp = HttpResponse(resp_str)
 			resp.status_code = 406
 			return resp
-	except r:
-		raise r
+	except:
 		resp = HttpResponse("User/Group does not exist")
 		resp.status_code = 400
 		return resp
