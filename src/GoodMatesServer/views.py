@@ -19,7 +19,7 @@ def parse_request(request):
 	return request.POST
 
 def overlapping_times(start_time, end_time, group, query_dict):
-	in_range = lambda t: Q(start_time__gte=t) & Q(end_time__lte=t)
+	in_range = lambda t: Q(start_time__lte=t) & Q(end_time__gte=t)
 	return query_dict.filter(in_range(start_time) | in_range(end_time), Q(group=group))
 
 @csrf_exempt
