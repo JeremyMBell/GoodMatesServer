@@ -19,7 +19,7 @@ def parse_request(request):
 	return request.POST
 
 def overlapping_times(start_time, end_time, group, query_dict):
-	return query_dict.filter(Q(start_time__lte=end_time) | Q(end_time__gte=start_time), group=group)
+	return query_dict.filter(Q(start_time__lte=end_time) | Q(end_time__gte=start_time), Q(group=group))
 
 @csrf_exempt
 def create_user(request):
