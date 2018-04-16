@@ -1,5 +1,6 @@
 from django.core import serializers
 from GoodMatesServer.models import *
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
