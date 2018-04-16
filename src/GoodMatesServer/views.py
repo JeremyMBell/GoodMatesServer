@@ -126,8 +126,8 @@ def book_shower(request):
 		userid = request.get("uid")
 		user = User.objects.get(uid=userid)
 		group = Group.objects.get(uid=code)
-		start = datetime.strptime(request.get("start_time"), DATETIME_FORMAT)
-		stop = datetime.strptime(request.get("end_time"), DATETIME_FORMAT)
+		start_time = datetime.strptime(request.get("start_time"), DATETIME_FORMAT)
+		end_time = datetime.strptime(request.get("end_time"), DATETIME_FORMAT)
 		overlapping_showers = overlapping_times(start_time, end_time, group, Shower.objects)
 		if (len(overlapping_showers) > 0):
 			resp_str = "Your shower time overlaps with "
@@ -143,12 +143,13 @@ def book_shower(request):
 			resp = HttpResponse(resp_str)
 			resp.status_code = 406
 			return resp
-	except:
+	except r:
+		raise r
 		resp = HttpResponse("User/Group does not exist")
 		resp.status_code = 400
 		return resp
 
-	shower = Shower(start_time=start, end_time=stop, user=user, group=group)
+	shower = Shower(start_time=start_time, end_time=end_time, user=user, group=group)
 	shower.save()
 	data = jsonize(shower)
 	return JsonResponse(json.loads(data), safe=False)
