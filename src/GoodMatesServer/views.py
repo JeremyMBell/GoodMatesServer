@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 
 DATETIME_FORMAT = "%m/%d/%Y %I:%M %p"
+STRFTIME_FORMAT = "%I:%M %p"
 
 def jsonize(obj):
 	if isinstance(obj, list):
@@ -16,6 +17,8 @@ def jsonize(obj):
 def parse_request(request):
 	return request.POST
 
+def overlapping_times(start_time, end_time, group, query_dict)
+	return query_dict.filter(Q(start_time__gte=start_time) | Q(start_time__lte=end_time), group=group)
 
 @csrf_exempt
 def create_user(request):
@@ -125,6 +128,21 @@ def book_shower(request):
 		group = Group.objects.get(uid=code)
 		start = datetime.strptime(request.get("start_time"), DATETIME_FORMAT)
 		stop = datetime.strptime(request.get("end_time"), DATETIME_FORMAT)
+		overlapping_showers = overlapping_times(start_time, end_time, group, Shower.objects)
+		if (len(overlapping_showers) > 0):
+			resp_str = "Your shower time overlaps with "
+			shower_strs = []
+			for shower in overlapping_showers:
+				user = shower.user
+				shower_strs.append(shower.user.first_name + " " + shower.user.last_name + "'s shower at " + shower.start_time.strftime(STRFTIME_FORMAT) + "-" + shower.end_time.strftime(STRFTIME_FORMAT))
+			if len(shower_strs) > 1:
+				last_shower = shower_strs.pop()
+				resp_str += ", ".join(shower_strs) + ", and " + last_shower
+			else:
+				resp_str += last_shower
+			resp = HttpResponse(resp_str)
+			resp.status_code = 406
+			return resp
 	except:
 		resp = HttpResponse("User/Group does not exist")
 		resp.status_code = 400
