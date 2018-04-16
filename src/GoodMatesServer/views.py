@@ -136,8 +136,9 @@ def book_shower(request):
 			for shower in overlapping_showers:
 				user = shower.user
 				shower_strs.append(shower.user.first_name + " " + shower.user.last_name + "'s shower at " + shower.start_time.strftime(STRFTIME_FORMAT) + "-" + shower.end_time.strftime(STRFTIME_FORMAT))
+			
+			last_shower = shower_strs.pop()
 			if len(shower_strs) > 1:
-				last_shower = shower_strs.pop()
 				resp_str += ", ".join(shower_strs) + ", and " + last_shower
 			else:
 				resp_str += last_shower
