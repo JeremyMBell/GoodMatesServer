@@ -142,7 +142,7 @@ def book_shower(request):
 				resp_str += ", ".join(shower_strs) + ", and " + last_shower
 			else:
 				resp_str += last_shower
-			resp = HttpResponse(resp_str)
+			resp = JsonResponse([{'error': resp_str}], safe=False)
 			resp.status_code = 406
 			return resp
 	except:
